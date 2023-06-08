@@ -1,0 +1,5 @@
+@section @initAdminPage {
+  page.layout = model.layout || '/layout/layout.view'
+  model.header = model.header || '/headers/adminHeader-header.view'
+  model.text = 'admin page initialized.'
+}

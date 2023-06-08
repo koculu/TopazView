@@ -1,0 +1,32 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <Copyright>Ahmed Yasin Koculu</Copyright>
+    <Authors>Ahmed Yasin Koculu</Authors>
+    <PackageId>TopazView</PackageId>
+    <Title>TopazView</Title>
+    <ProductVersion>1.0.0.0</ProductVersion>
+    <Version>1.0.0.0</Version>
+    <Authors>Ahmed Yasin Koculu</Authors>
+    <AssemblyTitle>TopazView</AssemblyTitle>
+    <Description>TopazView is a lightweight view engine that utilizes the Topaz JavaScript Engine.</Description>
+    <Summmary>
+      TopazView is a lightweight view engine that utilizes the Topaz JavaScript Engine. It serves as an alternative to the Razor View Engine, offering several key features and benefits.
+    </Summmary>
+    <PackageTags>high-performance, view-engine, template-engine, razor, javascript, dotnet</PackageTags>
+    <ReleaseNotes></ReleaseNotes>
+    <Company>koculu</Company>
+
+    <PackageProjectUrl>https://tenray.io</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <AnalysisMode>All</AnalysisMode>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <DebugType>portable</DebugType>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+</Project>

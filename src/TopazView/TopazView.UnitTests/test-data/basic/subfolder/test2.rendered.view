@@ -1,0 +1,11 @@
+html
+body
+admin-header
+test2: admin page initialized.
+    scope section 2 rendered
+test3: second:admin page initialized.3
+    optional section 2 rendered
+simple footer: Test Basic Use Case
+    optional section 1 rendered
+body
+html

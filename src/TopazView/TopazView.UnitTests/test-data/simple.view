@@ -1,0 +1,62 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>@model.Title</title>
+</head>
+<body>
+<div>@model.Message</div>
+(@page.raw('test'))
+@if(model.Title.Contains('Basic')) {
+	Title contains "Basic"
+}
+@if(!model.Title.Contains('Basic'))
+{
+	Title does not contain "Basic"
+}
+
+----------------
+
+@if(model.Title.Contains('Basic')){
+	Title contains "Basic"
+}
+else {
+	Hidden "else" condition 1
+}
+@if(!model.Title.Contains('Basic'))
+{
+	Title does not contain "Basic"
+}
+else {
+	Visible "else" condition 2
+}
+
+----------------
+
+@if(!model.Title.Contains('Basic'))
+{
+	none
+	@(page.raw('none'))
+}
+else {
+	abc
+	@(page.raw(model.Title + ' 123'))
+	xyz
+}
+
+----------------
+@if(model.Title.Contains('Basic'))
+{
+}
+else {}
+
+@if(page!=null)
+{
+    @page.raw("***True***")
+}
+else {
+    @page.raw("+++False+++")
+}
+
+</body>
+</html>

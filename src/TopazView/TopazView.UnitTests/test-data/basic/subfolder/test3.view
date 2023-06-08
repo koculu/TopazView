@@ -1,0 +1,20 @@
+@{
+    model.text = "second:" + model.text
+
+    model.renderBlogBody = (title, text) => {
+        model.blog = {
+            title,
+            text
+        }
+        page.renderSection("blog-body");
+    }
+
+    model.renderBlogBody("Blog 1","content 1");
+    model.renderBlogBody("Blog 2","content 2");
+}
+@section blog-body {
+    <blog>
+        <title>@model.blog.title</title>
+        <title>@model.blog.text</title>
+    </blog>
+}

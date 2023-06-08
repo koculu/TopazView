@@ -1,0 +1,21 @@
+@page.renderView('/header/admin-header.view')
+test2: @model.text
+
+@page.renderScopeSection('scope-section')
+@{
+    model.text = "second:" + model.text
+}
+test3: @(model.text+'3')
+@section optional-section {
+    optional section 2 rendered
+}
+@section scope-section {
+    scope section 2 rendered
+}
+@section @onLoad {
+  // page.onLoad script event is called at the start of the rendering.
+  // Run any initialization code here.
+  // You can define the onLoad script section anywhere in the view.
+  // Regardless of the position, it will be called first.
+  page.runViewScript('/helper/helper.view', 'initAdminPage')
+}

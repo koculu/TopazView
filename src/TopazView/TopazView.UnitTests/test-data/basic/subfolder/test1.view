@@ -1,0 +1,6 @@
+@Layout = "/layout/layout.view"
+
+test view
+@section optional-section {
+    optional section 1 rendered
+}

@@ -1,0 +1,27 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Test Basic Use Case</title>
+</head>
+<body>
+<div>Hello world!</div>
+(test)
+	Title contains "Basic"
+
+----------------
+
+	Title contains "Basic"
+	Visible "else" condition 2
+
+----------------
+
+	abc
+	Test Basic Use Case 123
+	xyz
+
+----------------
+
+    ***True***
+</body>
+</html>

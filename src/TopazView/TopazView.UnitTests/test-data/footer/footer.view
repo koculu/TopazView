@@ -1,0 +1,2 @@
+simple footer: @(model.Title)
+@page.renderViewSection("../basic/subfolder/test1.view", "optional-section")
