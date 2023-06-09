@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Text;
+﻿using System.Text;
+using Tenray.TopazView.DI;
 using Tenray.TopazView.Exceptions;
 using Tenray.TopazView.Extensions;
 
@@ -35,14 +35,14 @@ internal sealed class CompiledView : ICompiledViewInternal, IDisposable
 
     public CompiledView(
         IViewEngineComponents viewEngineComponents,
-        IServiceProvider serviceProvider,
+        IJavascriptEngineProvider javascriptEngineProvider,
         View viewInternal)
     {
         ViewEngineComponents = viewEngineComponents;
         ViewInternal = viewInternal;
         JavascriptEngine =
             viewInternal.Flags.HasFlag(ViewFlags.PrivateJavascriptEngine)
-            ? serviceProvider.GetService<IJavascriptEngine>()
+            ? javascriptEngineProvider.GetJavascriptEngine()
             : viewEngineComponents.GlobalJavascriptEngine;
     }
 
@@ -134,7 +134,7 @@ View: {Path}", e);
         if (contextInternal.IsRenderingPartNow(Path))
         {
 #if DEBUG
-            throw new Exception($"Recursive rendering detected: {Path}");
+            throw new ViewCompilerException($"Recursive rendering detected: {Path}");
 #else
             return;
 #endif
@@ -148,15 +148,28 @@ View: {Path}", e);
         var list = TextParts;
         var jsEngine = JavascriptEngine;
         var lastIfStatementCondition = false;
+        var skipElseBlocks = false;
         foreach (var part in list)
         {
             if (part.IsScript)
             {
+                if (part.IsIfStatement)
+                {
+                    // reset state
+                    skipElseBlocks = false;
+                    lastIfStatementCondition = false;
+                }
+                else if (part.IsElseIfStatement && lastIfStatementCondition)
+                {
+                    skipElseBlocks = true;
+                    continue;
+                }
+
                 var data = jsEngine
                     .InvokeFunction(
                         part.FunctionName,
                         contextInternal);
-                if (part.IsIfStatement)
+                if (part.IsIfStatement || part.IsElseIfStatement)
                 {
                     lastIfStatementCondition = !Equals(data, false);
                 }
@@ -173,6 +186,13 @@ View: {Path}", e);
                 RenderSection(context, part.SectionName);
                 continue;
             }
+            if (part.IsElseIfBlock)
+            {
+                if (!lastIfStatementCondition || skipElseBlocks)
+                    continue;
+                RenderSection(context, part.SectionName);
+                continue;
+            }
             if (part.IsElseBlock)
             {
                 if (lastIfStatementCondition)
@@ -180,7 +200,6 @@ View: {Path}", e);
                 RenderSection(context, part.SectionName);
                 continue;
             }
-
             encoding.GetBytes(
                 viewContent.Slice(part.Start, part.Length),
                 contextInternal.BufferWriter);

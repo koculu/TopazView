@@ -35,7 +35,7 @@ public sealed class FileSystemContentWatcher : IDisposable
         TrackViewsUsingPrivateJavascriptEngine = trackViewsUsingPrivateJavascriptEngine;
     }
 
-    public async Task StartWatcher(string path, IViewEngine viewEngine)
+    public void StartWatcher(string path, IViewEngine viewEngine)
     {
         if (ViewEngine != null)
             return;
@@ -45,7 +45,11 @@ public sealed class FileSystemContentWatcher : IDisposable
         {
             var watcher = new FileSystemWatcher(Path.GetFullPath(path))
             {
-                NotifyFilter = NotifyFilters.LastWrite,
+                NotifyFilter =
+                    NotifyFilters.LastAccess |
+                    NotifyFilters.LastWrite |
+                    NotifyFilters.FileName |
+                    NotifyFilters.DirectoryName,
                 IncludeSubdirectories = true,
                 EnableRaisingEvents = true
             };
@@ -55,12 +59,12 @@ public sealed class FileSystemContentWatcher : IDisposable
             Watcher = watcher;
         }
 
-        await Task.Run(startWatcher).ConfigureAwait(false);
+        Task.Run(startWatcher).Wait();
     }
 
     void DropView(string fullPath)
     {
-        var path = "/" + GetRelativePath(fullPath);
+        var path = GetRelativePath(fullPath);
         if (TrackViewsUsingPrivateJavascriptEngine)
         {
             ViewEngine.DropViewByPath(

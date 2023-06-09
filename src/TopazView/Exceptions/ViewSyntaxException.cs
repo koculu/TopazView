@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Tenray.TopazView.Exceptions;
+﻿namespace Tenray.TopazView.Exceptions;
 
 public class ViewSyntaxException : Exception
 {
@@ -13,10 +11,6 @@ public class ViewSyntaxException : Exception
     }
 
     public ViewSyntaxException(string message, Exception innerException) : base(message, innerException)
-    {
-    }
-
-    protected ViewSyntaxException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 }

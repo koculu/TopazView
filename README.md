@@ -23,7 +23,7 @@ using Tenray.TopazView;
 var path = "web/views";
 var viewEngine = new ViewEngineFactory()
     .SetContentProvider(new FileSystemContentProvider(path))
-    .GetOrCreateViewEngine();
+    .CreateViewEngine();
 
 var contentWatcher = new FileSystemContentWatcher();
 contentWatcher.StartWatcher(path, viewEngine);

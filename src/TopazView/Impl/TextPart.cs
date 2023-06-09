@@ -1,6 +1,10 @@
 ﻿#undef DEBUG_TEXT_PARTS
 
 
+#if DEBUG_TEXT_PARTS
+using System.Diagnostics;
+#endif
+
 namespace Tenray.TopazView.Impl;
 
 #if DEBUG_TEXT_PARTS
@@ -28,7 +32,7 @@ internal sealed class TextPart
 
     public bool IsScriptSection => Type == TextPartType.ScriptSection;
 
-    public bool IsScript => IsScriptStatement || IsScriptBlock || IsIfStatement;
+    public bool IsScript => IsScriptStatement || IsScriptBlock || IsIfStatement || IsElseIfStatement;
 
     public bool IsScriptStatement => Type == TextPartType.ScriptStatement;
 
@@ -36,11 +40,15 @@ internal sealed class TextPart
 
     public bool IsIfStatement => Type == TextPartType.IfStatement;
 
+    public bool IsElseIfStatement => Type == TextPartType.ElseIfStatement;
+
     public bool IsIfBlock => Type == TextPartType.IfBlock;
+
+    public bool IsElseIfBlock => Type == TextPartType.ElseIfBlock;
 
     public bool IsElseBlock => Type == TextPartType.ElseBlock;
 
-    public bool IsIfElseBlock => IsIfBlock || IsElseBlock;
+    public bool IsIfElseElseIfBlock => IsIfBlock || IsElseBlock || IsElseIfBlock;
 
     public ICompiledViewInternal CompiledView { get; set; }
 
@@ -59,6 +67,8 @@ internal sealed class TextPart
                 $"return {text.Substring(Start, Length)}",
             TextPartType.IfStatement =>
                 $"return !!{text.Substring(Start + 3, Length - 3)}",
+            TextPartType.ElseIfStatement =>
+                $"return !!{text.Substring(Start, Length)}",
             _ => text.Substring(Start, Length)
         };
     }

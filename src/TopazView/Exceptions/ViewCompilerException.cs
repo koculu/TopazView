@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Tenray.TopazView.Exceptions;
+﻿namespace Tenray.TopazView.Exceptions;
 
 public class ViewCompilerException : Exception
 {
@@ -13,10 +11,6 @@ public class ViewCompilerException : Exception
     }
 
     public ViewCompilerException(string message, Exception innerException) : base(message, innerException)
-    {
-    }
-
-    protected ViewCompilerException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 }

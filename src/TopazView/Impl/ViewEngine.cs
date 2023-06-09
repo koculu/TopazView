@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Buffers;
+﻿using System.Buffers;
+using Tenray.TopazView.DI;
 using Tenray.TopazView.Utility;
 
 namespace Tenray.TopazView.Impl;
@@ -8,16 +8,20 @@ internal sealed class ViewEngine : IViewEngine
 {
     IViewRepository ViewRepository { get; }
 
-    IServiceProvider ServiceProvider { get; }
+    IPageProvider PageProvider { get; }
 
-    public IContentProvider ContentProvider => ServiceProvider.GetService<IContentProvider>();
+    IContentProviderProvider ContentProviderProvider { get; }
+
+    public IContentProvider ContentProvider => ContentProviderProvider.GetContentProvider();
 
     public ViewEngine(
         IViewEngineComponents viewEngineComponents,
-        IServiceProvider serviceProvider)
+        IPageProvider pageProvider,
+        IContentProviderProvider contentProviderProvider)
     {
         ViewRepository = viewEngineComponents.ViewRepository;
-        ServiceProvider = serviceProvider;
+        PageProvider = pageProvider;
+        ContentProviderProvider = contentProviderProvider;
     }
 
     public IView GetOrCreateView(string path, ViewFlags flags)
@@ -45,7 +49,7 @@ internal sealed class ViewEngine : IViewEngine
     {
         var renderContext = new ViewRenderContext(this, bufferWriter)
         {
-            Page = ServiceProvider.GetService<IPage>()
+            Page = PageProvider.GetPage()
         };
         ((Page)renderContext.Page).SetViewRenderContext(renderContext);
         return renderContext;

@@ -2,6 +2,10 @@
 
 namespace Tenray.TopazView;
 
+/// <summary>
+/// The public interface of the page object that is exposed to the view script.
+/// The naming convention for public methods and properties follows common JavaScript conventions.
+/// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "This is a sealed class exposed to JSEngine.")]
 public interface IPage
 {

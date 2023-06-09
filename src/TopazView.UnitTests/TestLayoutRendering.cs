@@ -9,8 +9,7 @@ public class TestLayout
     {
         var viewEngine = new ViewEngineFactory()
             .SetContentProvider(new FileSystemContentProvider("../../../test-data"))
-            .Initialize()
-            .GetOrCreateViewEngine();
+            .CreateViewEngine();
 
         var contentProvider = viewEngine.ContentProvider;
 
@@ -33,8 +32,7 @@ public class TestLayout
     {
         var viewEngine = new ViewEngineFactory()
             .SetContentProvider(new FileSystemContentProvider("../../../test-data"))
-            .Initialize()
-            .GetOrCreateViewEngine();
+            .CreateViewEngine();
 
         var contentProvider = viewEngine.ContentProvider;
 
@@ -57,8 +55,7 @@ public class TestLayout
     {
         var viewEngine = new ViewEngineFactory()
             .SetContentProvider(new FileSystemContentProvider("../../../test-data"))
-            .Initialize()
-            .GetOrCreateViewEngine();
+            .CreateViewEngine();
 
         var contentProvider = viewEngine.ContentProvider;
 
@@ -69,6 +66,27 @@ public class TestLayout
 
         var text = view.RenderViewToString(context).GetAwaiter().GetResult();
         var expected = contentProvider.GetContent("/basic/subfolder/test3.rendered.view");
+
+        Console.WriteLine(text);
+        Assert.That(text, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void TestElseIf()
+    {
+        var viewEngine = new ViewEngineFactory()
+            .SetContentProvider(new FileSystemContentProvider("../../../test-data"))
+            .CreateViewEngine();
+
+        var contentProvider = viewEngine.ContentProvider;
+
+        var view = viewEngine.GetOrCreateView("basic/subfolder/test4.view").GetCompiledView();
+        var context = viewEngine.CreateViewRenderContext();
+
+        context.Model = new JsObject();
+
+        var text = view.RenderViewToString(context).GetAwaiter().GetResult();
+        var expected = contentProvider.GetContent("/basic/subfolder/test4.rendered.view");
 
         Console.WriteLine(text);
         Assert.That(text, Is.EqualTo(expected));

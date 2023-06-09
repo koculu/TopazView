@@ -11,7 +11,7 @@ public class TestBasicRendering
     {
         var viewEngine = new ViewEngineFactory()
             .SetContentProvider(new FileSystemContentProvider("../../../test-data"))
-            .GetOrCreateViewEngine();
+            .CreateViewEngine();
 
         var bufferWriter = new ArrayBufferWriter<byte>();
         var contentProvider = viewEngine.ContentProvider;
@@ -37,7 +37,7 @@ public class TestBasicRendering
     {
         var viewEngine = new ViewEngineFactory()
             .SetContentProvider(new FileSystemContentProvider("../../../test-data"))
-            .GetOrCreateViewEngine();
+            .CreateViewEngine();
 
         using var memoryStream = new MemoryStream();
         var contentProvider = viewEngine.ContentProvider;
@@ -63,7 +63,7 @@ public class TestBasicRendering
     {
         var viewEngine = new ViewEngineFactory()
             .SetContentProvider(new FileSystemContentProvider("../../../test-data"))
-            .GetOrCreateViewEngine();
+            .CreateViewEngine();
 
         var contentProvider = viewEngine.ContentProvider;
 

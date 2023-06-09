@@ -1,4 +1,6 @@
-﻿namespace Tenray.TopazView.Impl;
+﻿using Tenray.TopazView.DI;
+
+namespace Tenray.TopazView.Impl;
 
 internal sealed class View : IView, IDisposable
 {
@@ -8,7 +10,7 @@ internal sealed class View : IView, IDisposable
 
     IViewEngineComponents ViewEngineComponents { get; }
 
-    IServiceProvider ServiceProvider { get; }
+    IJavascriptEngineProvider JavascriptEngineProvider { get; }
 
     internal ICompiledView CompiledView;
 
@@ -17,14 +19,13 @@ internal sealed class View : IView, IDisposable
     public View(string path,
         ViewFlags flags,
         IViewEngineComponents viewEngineComponents,
-        IServiceProvider serviceProvider)
+        IJavascriptEngineProvider javascriptEngineProvider)
     {
         Path = path;
         Flags = flags;
         ViewEngineComponents = viewEngineComponents;
-        ServiceProvider = serviceProvider;
-        UncompiledView =
-            new CompiledView(viewEngineComponents, serviceProvider, this);
+        JavascriptEngineProvider = javascriptEngineProvider;
+        UncompiledView = new CompiledView(viewEngineComponents, javascriptEngineProvider, this);
     }
 
     public async ValueTask<ICompiledView> GetCompiledViewAsync()
@@ -65,7 +66,7 @@ internal sealed class View : IView, IDisposable
     {
         CompiledView = null;
         var compiledView = UncompiledView;
-        UncompiledView = new CompiledView(ViewEngineComponents, ServiceProvider, this);
+        UncompiledView = new CompiledView(ViewEngineComponents, JavascriptEngineProvider, this);
         await Task.Delay(delayDispose).ConfigureAwait(false);
         compiledView.ResetCompilation();
         compiledView.Dispose();

@@ -9,5 +9,7 @@ internal enum TextPartType
     ScriptSection,
     IfStatement,
     IfBlock,
-    ElseBlock
+    ElseBlock,
+    ElseIfStatement,
+    ElseIfBlock,
 }

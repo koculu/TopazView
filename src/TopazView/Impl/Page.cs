@@ -4,11 +4,10 @@ using System.Text.Encodings.Web;
 using Tenray.Topaz.API;
 using Tenray.TopazView.Exceptions;
 using Tenray.TopazView.Extensions;
-using Tenray.TopazView.Impl;
 
-namespace Tenray.TopazView;
+namespace Tenray.TopazView.Impl;
 
-public class Page : IPage
+internal sealed class Page : IPage
 {
     IViewRenderContextInternal ViewRenderContext { get; set; }
 
@@ -26,7 +25,7 @@ public class Page : IPage
 
     public JsObject data { get; set; } = new JsObject();
 
-    public virtual string skin => "light";
+    public string skin { get; set; }
 
     public Page(TextEncoder textEncoder)
     {

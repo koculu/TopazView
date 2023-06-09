@@ -1,4 +1,6 @@
 ﻿using System.Collections.Concurrent;
+using System.IO;
+using Tenray.TopazView.DI;
 
 namespace Tenray.TopazView.Impl;
 
@@ -6,37 +8,44 @@ internal sealed class ViewRepository : IViewRepository, IViewEngineComponentsPro
 {
     ConcurrentDictionary<string, IView> Views { get; } = new();
 
-    public IServiceProvider ServiceProvider { get; }
+    public IJavascriptEngineProvider JavascriptEngineProvider { get; }
 
     public IViewEngineComponents ViewEngineComponents { get; set; }
 
     public ViewRepository(
-        IServiceProvider serviceProvider)
+        IJavascriptEngineProvider javascriptEngineProvider)
     {
-        ServiceProvider = serviceProvider;
+        JavascriptEngineProvider = javascriptEngineProvider;
     }
 
     public void DropViewByKey(string key, TimeSpan delayDispose)
     {
         if (Views
             .TryRemove(
-                key,
+                NormalizePath(key),
                 out var view))
             view.DisposeView(delayDispose).AsTask();
     }
 
+    static string NormalizePath(string path)
+    {
+        if (path.StartsWith('/'))
+            return path[1..];
+        return path;
+    }
+
     public void DropViewByPath(string path, ViewFlags viewFlags, TimeSpan delayDispose)
     {
-        DropViewByKey(path + (int)viewFlags, delayDispose);
+        DropViewByKey(NormalizePath(path) + (int)viewFlags, delayDispose);
     }
 
     public IView GetOrCreateView(string path, ViewFlags viewFlags)
     {
-        var key = path + (int)viewFlags;
+        var key = NormalizePath(path) + (int)viewFlags;
         if (Views.TryGetValue(key, out var view))
             return view;
         var newView = new View(path, viewFlags,
-            ViewEngineComponents, ServiceProvider);
+            ViewEngineComponents, JavascriptEngineProvider);
         if (Views.TryAdd(key, newView))
             return newView;
 

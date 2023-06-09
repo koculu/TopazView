@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using SimpleInjector;
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
+using Tenray.TopazView.DI;
 using Tenray.TopazView.Exceptions;
-using Tenray.TopazView.Impl;
 
 namespace Tenray.TopazView;
 
@@ -10,108 +8,93 @@ public class ViewEngineFactory
 {
     Container Container { get; set; }
 
-    IContentProvider ContentProvider;
+    public IContentProvider ContentProvider { get; set; }
 
-    Func<IContentProvider> ContentProviderFactory;
+    public Func<IContentProvider> ContentProviderFactory { get; set; }
 
-    Lifestyle ContentProviderLifestyle = Lifestyle.Singleton;
+    public Func<TextEncoder> TextEncoderFactory { get; set; }
 
-    public ViewEngineFactory SetContentProvider(IContentProvider contentProvider)
+    public TextEncoder TextEncoder { get; set; }
+
+    public ITopazFactory TopazFactory { get; set; }
+
+    public Func<ITopazFactory> TopazFactoryFactory { get; set; }
+
+    public IViewEngine CreateViewEngine()
     {
-        if (Container != null)
-            throw new ViewFactoryException("Can not set content provider after the factory initialization.");
-        ContentProvider = contentProvider;
-        ContentProviderFactory = null;
-        return this;
-    }
-
-    public ViewEngineFactory SetContentProviderFactory(Func<IContentProvider> contentProviderFactory)
-    {
-        if (Container != null)
-            throw new ViewFactoryException("Can not set content provider factory after factory initialization.");
-        ContentProviderFactory = contentProviderFactory;
-        ContentProvider = null;
-        return this;
-    }
-
-    public ViewEngineFactory SetContentProviderServiceLifetime(ServiceLifetime serviceLifetime)
-    {
-        if (Container != null)
-            throw new ViewFactoryException("Can not set content provider service life time after factory initialization.");
-        switch (serviceLifetime)
-        {
-            case ServiceLifetime.Transient: ContentProviderLifestyle = Lifestyle.Transient; break;
-            case ServiceLifetime.Scoped: ContentProviderLifestyle = Lifestyle.Scoped; break;
-            case ServiceLifetime.Singleton: ContentProviderLifestyle = Lifestyle.Singleton; break;
-        }
-        return this;
-    }
-
-    public ViewEngineFactory Initialize(TextEncoder textEncoder = null)
-    {
-        if (Container != null)
-            return this;
-        return Initialize<TopazFactory>(textEncoder);
-    }
-
-    public ViewEngineFactory Initialize<TTopazFactory>(TextEncoder textEncoder = null)
-        where TTopazFactory : class, ITopazFactory
-    {
-        if (Container != null)
-            return this;
         SetupServices();
-        Container.RegisterInstance(textEncoder ?? HtmlEncoder.Default);
-        Container.Register<ITopazFactory, TTopazFactory>();
-        return this;
+        return Container.TransientObjectContainer.GetViewEngine();
     }
 
-    public ViewEngineFactory Initialize(Func<ITopazFactory> topazFactory, TextEncoder textEncoder = null)
+    void SetupServices()
     {
         if (Container != null)
-            return this;
-        SetupServices();
-        Container.Register(topazFactory);
-        Container.RegisterInstance(textEncoder ?? HtmlEncoder.Default);
-        return this;
-    }
-
-    private void SetupServices()
-    {
+            return;
         EnsureContentProviderIsConfigured();
         Container = new();
-        Container.Options.EnableAutoVerification = false;
-        Container.Options.SuppressLifestyleMismatchVerification = true;
-        Container.RegisterInstance<IServiceProvider>(Container);
-        RegisterContentProvider();
-        Container.Register<IPage, Page>();
-        Container.Register<IJavascriptEngine, JavascriptEngine>();
-        Container.Register<IViewCompiler, ViewCompiler>();
-        Container.Register<IViewRepository, ViewRepository>();
-        Container.RegisterSingleton<IViewEngine, ViewEngine>();
-        Container.RegisterSingleton<IViewEngineComponents, ViewEngineComponents>();
+        SetupUserInstances();
+        SetupUserFactories();
+        return;
     }
 
     void EnsureContentProviderIsConfigured()
     {
         if (ContentProvider == null && ContentProviderFactory == null)
-            throw new ViewFactoryException("Initialization failed. Content provider is not configured.");
+            throw new MissingConfigurationException("Initialization failed. Content provider is not configured.");
     }
 
-    void RegisterContentProvider()
+    void SetupUserFactories()
     {
-        if (ContentProvider != null)
-            Container.RegisterInstance(ContentProvider);
-        else if (ContentProviderFactory != null)
-            Container.Register(ContentProviderFactory, ContentProviderLifestyle);
-        else
-            throw new ViewFactoryException("Content Provider is not configured.");
+        Container.UserFactories.TopazFactoryFactory = TopazFactoryFactory;
+        Container.UserFactories.ContentProviderFactory = ContentProviderFactory;
+        Container.UserFactories.TextEncoderFactory = TextEncoderFactory;
     }
 
-    public IViewEngine GetOrCreateViewEngine()
+    void SetupUserInstances()
     {
-        Initialize();
-        return Container.GetService<IViewEngine>();
+        Container.UserInstances.TopazFactory = TopazFactory;
+        Container.UserInstances.TextEncoder = TextEncoder ?? HtmlEncoder.Default;
+        Container.UserInstances.ContentProvider = ContentProvider;
     }
+
+    #region Fluent factory methods
+
+    public ViewEngineFactory SetContentProvider(IContentProvider contentProvider)
+    {
+        ContentProvider = contentProvider;
+        return this;
+    }
+
+    public ViewEngineFactory SetContentProvider(Func<IContentProvider> contentProviderFactory)
+    {
+        ContentProviderFactory = contentProviderFactory;
+        return this;
+    }
+
+    public ViewEngineFactory SetTextEncoder(TextEncoder textEncoder)
+    {
+        TextEncoder = textEncoder;
+        return this;
+    }
+
+    public ViewEngineFactory SetTextEncoder(Func<TextEncoder> textEncoderFactory)
+    {
+        TextEncoderFactory = textEncoderFactory;
+        return this;
+    }
+
+    public ViewEngineFactory SetTopazFacory(ITopazFactory topazFactory)
+    {
+        TopazFactory = topazFactory;
+        return this;
+    }
+
+    public ViewEngineFactory SetTopazFacory(Func<ITopazFactory> topazFactoryFactory)
+    {
+        TopazFactoryFactory = topazFactoryFactory;
+        return this;
+    }
+    #endregion
 }
 
 // TODO: Implement developer friendly error page similar to razor.

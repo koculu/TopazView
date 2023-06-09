@@ -21,6 +21,10 @@ internal static class TextSplitter
 
     const char CloseParenthesis = ')';
 
+    const char OpenSquareBracket = '[';
+
+    const char CloseSquareBracket = ']';
+
     const char DoubleQuote = '"';
 
     const char SingleQuote = '\'';
@@ -133,10 +137,11 @@ internal static class TextSplitter
                 continue;
             }
 
-            if (remaining.StartsWith("if(", StringComparison.Ordinal))
+            if (remaining.StartsWith("if", StringComparison.Ordinal))
             {
                 i += 3;
                 textPart.Type = TextPartType.IfStatement;
+                SkipWhitespace(ref i, text, len);
                 SkipScriptStatement(list, ref textPart, ref i, text, len);
                 SkipWhitespace(ref i, text, len);
                 if (i >= len || text[i] != OpenBracket)
@@ -151,22 +156,43 @@ internal static class TextSplitter
             if (remaining.StartsWith("else ", StringComparison.Ordinal))
             {
                 i += 5;
-                textPart.Type = TextPartType.ElseBlock;
                 SkipWhitespace(ref i, text, len);
-                if (i >= len || text[i] != OpenBracket)
-                    throw new ViewSyntaxException("Invalid else statement.");
-                textPart.Start = i;
-                textPart.Length = len - i;
-                textPart.Type = TextPartType.ElseBlock;
-                nextChar = OpenBracket;
-                --i;
+                if (i < len && text[i..].StartsWith("if", StringComparison.Ordinal))
+                {
+                    i += 2;
+                    textPart.Type = TextPartType.ElseIfStatement;
+                    SkipWhitespace(ref i, text, len);
+                    textPart.Start = i;
+                    textPart.Length = len - i;
+                    SkipScriptStatement(list, ref textPart, ref i, text, len);
+                    SkipWhitespace(ref i, text, len);
+                    if (i >= len || text[i] != OpenBracket)
+                        throw new ViewSyntaxException("Invalid else if statement.");
+                    textPart.Start = i;
+                    textPart.Length = len - i;
+                    textPart.Type = TextPartType.ElseIfBlock;
+                    nextChar = OpenBracket;
+                    --i;
+                }
+                else
+                {
+                    textPart.Type = TextPartType.ElseBlock;
+                    SkipWhitespace(ref i, text, len);
+                    if (i >= len || text[i] != OpenBracket)
+                        throw new ViewSyntaxException("Invalid else statement.");
+                    textPart.Start = i;
+                    textPart.Length = len - i;
+                    textPart.Type = TextPartType.ElseBlock;
+                    nextChar = OpenBracket;
+                    --i;
+                }
             }
 
             if (nextChar == OpenBracket)
             {
                 i += 2;
-                var isIfBlock = textPart.IsIfBlock;
-                if (!textPart.IsIfElseBlock)
+                var isIfBlock = textPart.IsIfBlock || textPart.IsElseIfBlock;
+                if (!textPart.IsIfElseElseIfBlock)
                     textPart.Type = TextPartType.ScriptBlock;
                 SkipBlock(list, ref textPart, ref i, text, len);
                 SkipWhitespace(ref i, text, len);
@@ -251,7 +277,11 @@ internal static class TextSplitter
                 }
                 continue;
             }
-
+            if (c == OpenSquareBracket)
+            {
+                SkipSquareBrackets(ref i, text, len);
+                continue;
+            }
             if (openParenthesis > 0 && c == DoubleQuote)
             {
                 SkipDoubleQuote(ref i, text, len);
@@ -341,6 +371,29 @@ internal static class TextSplitter
                 }
                 --openedBrackets;
             }
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static void SkipSquareBrackets(ref int i, ReadOnlySpan<char> text, int len)
+    {
+        ++i;
+        for (; i < len; ++i)
+        {
+            var c = text[i];
+            if (c == SingleQuote)
+            {
+                SkipSingleQuote(ref i, text, len);
+                continue;
+            }
+            if (c == DoubleQuote)
+            {
+                SkipDoubleQuote(ref i, text, len);
+                continue;
+            }
+            if (c != CloseSquareBracket)
+                continue;
+            return;
         }
     }
 

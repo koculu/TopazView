@@ -1,4 +1,5 @@
-﻿using Tenray.TopazView.Exceptions;
+﻿using Tenray.TopazView.DI;
+using Tenray.TopazView.Exceptions;
 
 namespace Tenray.TopazView.Impl;
 
@@ -6,11 +7,11 @@ internal sealed class ViewCompiler : IViewCompiler, IViewEngineComponentsProvide
 {
     public IViewEngineComponents ViewEngineComponents { get; set; }
 
-    public IServiceProvider ServiceProvider { get; }
+    public IJavascriptEngineProvider JavascriptEngineProvider { get; }
 
-    public ViewCompiler(IServiceProvider serviceProvider)
+    public ViewCompiler(IJavascriptEngineProvider javascriptEngineProvider)
     {
-        ServiceProvider = serviceProvider;
+        JavascriptEngineProvider = javascriptEngineProvider;
     }
 
     ICompiledViewInternal CompileSection(
@@ -22,9 +23,9 @@ internal sealed class ViewCompiler : IViewCompiler, IViewEngineComponentsProvide
             parentCompiledView.Path + "#" + sectionName,
             parentCompiledView.ViewInternal.Flags,
             ViewEngineComponents,
-            ServiceProvider);
+            JavascriptEngineProvider);
         var compiledSection = new CompiledView(
-            ViewEngineComponents, ServiceProvider, view)
+            ViewEngineComponents, JavascriptEngineProvider, view)
         {
             ViewContent = sectionBody
         };
@@ -121,10 +122,11 @@ Section: {textPart.SectionName}", e);
                     jsEngine.ExecuteScript(script);
                     textPart.FunctionName = functionName;
                 }
-                else if (textPart.IsIfElseBlock)
+                else if (textPart.IsIfElseElseIfBlock)
                 {
                     textPart.SectionName = jsEngine.NextFunctionName +
-                        (textPart.IsIfBlock ? "_if" : "_else");
+                        (textPart.IsIfBlock ? "_if" :
+                        (textPart.IsElseIfBlock ? "_elseif" : "_else"));
                     textPart.CompiledView = compileSection(textPart);
                     uncompiledViewImpl.Sections.Add(textPart.SectionName, textPart.CompiledView);
                 }
