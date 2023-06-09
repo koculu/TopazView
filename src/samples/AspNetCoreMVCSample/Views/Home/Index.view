@@ -1,0 +1,9 @@
+﻿@Layout = "../Shared/Layout.view"
+@section @onLoad {
+    page.data["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://github.com/koculu/TopazView">building Web apps using TopazView.</a>.</p>
+</div>

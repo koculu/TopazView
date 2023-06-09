@@ -1,0 +1,7 @@
+﻿@Layout = "../Shared/Layout.view"
+@section @onLoad {
+    page.data["Title"] = "Privacy";
+}
+<h1>@page.data["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
