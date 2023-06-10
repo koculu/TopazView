@@ -11,7 +11,7 @@ TopazView is a lightweight view engine that utilizes the Topaz JavaScript Engine
 * **JavaScript syntax familiarity:** TopazView employs JavaScript syntax, making it more accessible and familiar to web developers.
 * **Simple learning curve:** The template syntax used in TopazView closely resembles Razor, ensuring a smooth learning curve for developers.
 * **Support for page models, layouts, sections, helper functions:** TopazView provides comprehensive support for page models, layouts, sections, and helper functions, enabling developers to create dynamic and modular views.
-* **Complete .NET API support:** opazView leverages the power of Topaz JavaScript engine to provide comprehensive access to the entire .NET API, giving developers extensive flexibility in their web development.
+* **Complete .NET API support:** TopazView leverages the power of Topaz JavaScript engine to provide comprehensive access to the entire .NET API, giving developers extensive flexibility in their web development.
 
 ## How to use TopazView?
 
