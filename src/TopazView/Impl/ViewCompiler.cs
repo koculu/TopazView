@@ -118,7 +118,7 @@ Section: {textPart.SectionName}", e);
                 {
                     var functionName = jsEngine.NextFunctionName;
                     var body = textPart.GetBody(text);
-                    var script = $"function {functionName} (page, model){{{body}}}";
+                    var script = $"async function {functionName} (page, model){{{body}}}";
                     jsEngine.ExecuteScript(script);
                     textPart.FunctionName = functionName;
                 }

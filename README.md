@@ -64,6 +64,10 @@ else {
 }
 ```
 
+## TopazView Sample for WebView 2:
+
+Experience the live editor of TopazView to witness TopazView in action.
+[TopazView WebView 2 Sample](https://github.com/koculu/TopazView/tree/main/src/samples/WebView2Sample)
 
 ## TODO list:
 
