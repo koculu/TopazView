@@ -5,15 +5,15 @@ using Tenray.Topaz.Options;
 
 namespace Tenray.TopazView;
 
-public class TopazFactory : ITopazFactory
+public sealed class TopazFactory : ITopazFactory
 {
     readonly Func<object, object> EncodeText;
 
     TextEncoder TextEncoder { get; }
 
-    public TopazFactory(TextEncoder textEncoder)
+    public TopazFactory(TextEncoder textEncoder = null)
     {
-        TextEncoder = textEncoder;
+        TextEncoder = textEncoder ?? HtmlEncoder.Default;
         EncodeText = (value) =>
         {
             if (value == null)

@@ -1,4 +1,5 @@
 ﻿using Tenray.Topaz;
+using Tenray.TopazView.Exceptions;
 
 namespace Tenray.TopazView.Impl;
 
@@ -51,12 +52,26 @@ internal sealed class JavascriptEngine : IJavascriptEngine
         string functionName,
         IViewRenderContext renderContext)
     {
-        var value = Engine
-            .InvokeFunction(
-                functionName,
-                default,
-                renderContext.Page,
-                renderContext.Model);
-        return value;
+        using var cancellationSource = new CancellationTokenSource(renderContext.MaximumScriptDuration);
+        try
+        {
+            var value = Engine
+                .InvokeFunction(
+                    functionName,
+                    cancellationSource.Token,
+                    renderContext.Page,
+                    renderContext.Model);
+            return value;
+        }
+        catch (OperationCanceledException e)
+        {
+            throw new ScriptExecutionTimeoutException
+                (@$"The script execution time has exceeded the maximum duration allowed in the render context.
+    MaximumScriptDuration: {renderContext.MaximumScriptDuration.Seconds} seconds", e)
+            {
+                MaximumScriptDuration = renderContext.MaximumScriptDuration
+            };
+        }
+
     }
 }

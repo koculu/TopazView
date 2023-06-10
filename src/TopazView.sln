@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreMVCSample", "samp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{2F1A3CE3-4808-4ECA-B237-638DDCA52055}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebView2Sample", "samples\WebView2Sample\WebView2Sample.csproj", "{263F7DE4-8D82-410C-A3BD-59167B205092}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,12 +31,17 @@ Global
 		{0047E11E-3C88-44C1-9EE1-15D459F93927}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0047E11E-3C88-44C1-9EE1-15D459F93927}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0047E11E-3C88-44C1-9EE1-15D459F93927}.Release|Any CPU.Build.0 = Release|Any CPU
+		{263F7DE4-8D82-410C-A3BD-59167B205092}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{263F7DE4-8D82-410C-A3BD-59167B205092}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{263F7DE4-8D82-410C-A3BD-59167B205092}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{263F7DE4-8D82-410C-A3BD-59167B205092}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0047E11E-3C88-44C1-9EE1-15D459F93927} = {2F1A3CE3-4808-4ECA-B237-638DDCA52055}
+		{263F7DE4-8D82-410C-A3BD-59167B205092} = {2F1A3CE3-4808-4ECA-B237-638DDCA52055}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A672420B-B5B1-4F06-B021-C603B4C4D984}

@@ -35,6 +35,8 @@ internal sealed class ViewRenderContext : IViewRenderContextInternal
     public string RenderedString => Encoding.GetString(
         ((MemoryBufferWriter<byte>)BufferWriter).WrittenSpan);
 
+    public TimeSpan MaximumScriptDuration { get; set; } = TimeSpan.FromSeconds(5);
+
     public ViewRenderContext(
         IViewEngine viewEngine,
         IBufferWriter<byte> bufferWriter)

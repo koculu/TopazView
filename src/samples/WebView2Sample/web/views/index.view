@@ -1,0 +1,41 @@
+@Layout  = "/layouts/layout.view"
+<p style="color:yellow">TopazView for WebView2</p>
+
+<p>
+* Use VS Code to edit the views.
+</p>
+<p>
+* Edit the view files while the application is running.</p>
+</p>
+<p>
+* Hot reload is enabled.
+</p>
+<p>
+* See IPage interface for available options.
+</p>
+<p>
+* Every script scope is isolated. Use page.data and model to transfer data between script scopes.
+</p>
+@{
+    var a = DateTime.Now;
+    function fibonacci(n) {
+        if (n <= 1) {
+          return n;
+        }
+
+        let fibPrev = 0;
+        let fibCurr = 1;
+
+        for (let i = 2; i <= n; i++) {
+          let temp = fibPrev + fibCurr;
+          fibPrev = fibCurr;
+          fibCurr = temp;
+        }
+
+        return fibCurr;
+    }
+    page.raw(`Result: ${fibonacci(92312)}<br>`)
+    var b = DateTime.Now;
+
+    page.raw(`Executed in ${(b-a).TotalMilliseconds} milliseconds.`);
+}

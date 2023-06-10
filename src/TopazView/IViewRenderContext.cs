@@ -12,4 +12,6 @@ public interface IViewRenderContext
     IJsObject Model { get; set; }
 
     Encoding Encoding { get; set; }
+
+    TimeSpan MaximumScriptDuration { get; set; }
 }

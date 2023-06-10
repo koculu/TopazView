@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>@model.title</title>
+	<link rel="shortcut icon" href="http//web/assets/favicon/favicon.ico">
+	<meta name="theme-color" content="#3063A0">	
+</head>
+<body style="background: #222222; color: #dedede; font-size: 33px; text-align: center">
+	<div class="app">
+		<header class="header">
+			@page.renderView(model.header)
+		</header>
+		<aside class="aside">
+			@page.renderView(model.aside)
+		</aside>
+		<main class="main">
+			@page.renderBody()
+		</main>
+	</div>
+	@page.writeScripts()
+	@page.writeStyles()
+	@page.renderBodySection('bottom')
+	@page.renderViewSection(model.header, 'bottom')
+	@page.renderViewSection(model.aside, 'bottom')
+	@page.raw(model.sitegoogleAnalytics)
+</body>
+</html>

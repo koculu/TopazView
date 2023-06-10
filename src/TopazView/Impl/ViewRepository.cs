@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.IO;
 using Tenray.TopazView.DI;
 
 namespace Tenray.TopazView.Impl;
