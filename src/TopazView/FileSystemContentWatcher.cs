@@ -16,11 +16,14 @@ public sealed class FileSystemContentWatcher : IDisposable
 
     bool TrackViewsUsingPrivateJavascriptEngine { get; }
 
+    /// <summary>
+    /// Immediate dispose might hurt ongoing requests.
+    /// </summary>
     TimeSpan DelayViewDispose { get; }
 
     public FileSystemContentWatcher()
     {
-        DelayViewDispose = TimeSpan.Zero;
+        DelayViewDispose = TimeSpan.FromSeconds(2);
     }
 
     public FileSystemContentWatcher(TimeSpan delayViewDispose, bool trackViewsUsingPrivateJavascriptEngine = false)
@@ -31,7 +34,7 @@ public sealed class FileSystemContentWatcher : IDisposable
 
     public FileSystemContentWatcher(bool trackViewsUsingPrivateJavascriptEngine)
     {
-        DelayViewDispose = TimeSpan.Zero;
+        DelayViewDispose = TimeSpan.FromSeconds(2);
         TrackViewsUsingPrivateJavascriptEngine = trackViewsUsingPrivateJavascriptEngine;
     }
 
@@ -46,7 +49,7 @@ public sealed class FileSystemContentWatcher : IDisposable
             var watcher = new FileSystemWatcher(Path.GetFullPath(path))
             {
                 NotifyFilter =
-                    NotifyFilters.LastAccess |
+                    NotifyFilters.CreationTime |
                     NotifyFilters.LastWrite |
                     NotifyFilters.FileName |
                     NotifyFilters.DirectoryName,

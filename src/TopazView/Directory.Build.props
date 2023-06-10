@@ -5,8 +5,8 @@
     <Authors>Ahmed Yasin Koculu</Authors>
     <PackageId>TopazView</PackageId>
     <Title>TopazView</Title>
-    <ProductVersion>1.0.3.0</ProductVersion>
-    <Version>1.0.3.0</Version>
+    <ProductVersion>1.0.4.0</ProductVersion>
+    <Version>1.0.4.0</Version>
     <Authors>Ahmed Yasin Koculu</Authors>
     <AssemblyTitle>TopazView</AssemblyTitle>
     <Description>TopazView is a lightweight view engine that utilizes the Topaz JavaScript Engine.</Description>
