@@ -333,7 +333,21 @@ internal static class TextSplitter
         for (; i < len; ++i)
         {
             var c = text[i];
-
+            if (c == '/' && i + 1 < len)
+            {
+                // skip comments.
+                var p = text[i + 1];
+                if (p == '/')
+                {
+                    SkipLine(ref i, text, len);
+                    continue;
+                }
+                else if (p == '*')
+                {
+                    SkipBlockComment(ref i, text, len);
+                    continue;
+                }
+            }
             if (c == DoubleQuote)
             {
                 SkipDoubleQuote(ref i, text, len);
@@ -479,6 +493,21 @@ internal static class TextSplitter
             ++i;
         if (i < len && text[i] == '\n')
             ++i;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static void SkipLine(ref int i, ReadOnlySpan<char> text, int len)
+    {
+        while (i < len && text[i] != '\n')
+            ++i;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static void SkipBlockComment(ref int i, ReadOnlySpan<char> text, int len)
+    {
+        while (i + 1 < len && !(text[i] == '*' && text[i + 1] == '/'))
+            ++i;
+        ++i;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
