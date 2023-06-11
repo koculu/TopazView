@@ -48,7 +48,7 @@ The following is a sample view template file (index.view).
 ```cshtml
 @Layout="../layouts/layout.view"
 
-<div>@model.title</div>
+<div>@model.Title</div>
 
 @{
     for(const i of [1,2,3]) {
@@ -56,7 +56,7 @@ The following is a sample view template file (index.view).
     }
 }
 
-@if(@model.title) {
+@if(@model.Title) {
     <div>model has a title.</div>
 }
 else {
