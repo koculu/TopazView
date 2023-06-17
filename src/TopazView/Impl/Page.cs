@@ -61,23 +61,23 @@ internal sealed class Page : IPage
         return (ICompiledViewInternal)compiledView;
     }
 
-    public void renderSection(object section)
+    public void renderSection(object section, params object[] args)
     {
-        renderScopeSection(section);
+        renderScopeSection(section, args);
         if (ViewRenderContext.Body != ViewRenderContext.RenderingNow)
-            renderBodySection(section);
-        renderLayoutSection(section);
+            renderBodySection(section, args);
+        renderLayoutSection(section, args);
     }
 
-    public void runScript(object script)
+    public void runScript(object script, params object[] args)
     {
-        runScopeScript(script);
+        runScopeScript(script, args);
         if (ViewRenderContext.Body != ViewRenderContext.RenderingNow)
-            runBodyScript(script);
-        runLayoutScript(script);
+            runBodyScript(script, args);
+        runLayoutScript(script, args);
     }
 
-    public void renderViewSection(object view, object section)
+    public void renderViewSection(object view, object section, params object[] args)
     {
         if (IsValueNull(view) ||
             IsValueNull(section))
@@ -85,21 +85,21 @@ internal sealed class Page : IPage
         var viewName = view.ToString();
         var sectionName = section.ToString();
         var compiledView = GetCompiledView(viewName);
-        compiledView.RenderSection(ViewRenderContext, sectionName);
+        compiledView.RenderSection(ViewRenderContext, sectionName, args);
     }
 
-    public void renderScopeSection(object section)
+    public void renderScopeSection(object section, params object[] args)
     {
         if (IsValueNull(section))
             return;
         var sectionName = section.ToString();
 
         var renderingNow = ViewRenderContext.RenderingNow;
-        if (renderingNow.RenderSection(ViewRenderContext, sectionName))
+        if (renderingNow.RenderSection(ViewRenderContext, sectionName, args))
             return;
     }
 
-    public void renderBodySection(object section)
+    public void renderBodySection(object section, params object[] args)
     {
         if (IsValueNull(section))
             return;
@@ -107,22 +107,22 @@ internal sealed class Page : IPage
         if (body == ViewRenderContext.RenderingNow)
             throw new RenderException("Can not render body section inside body. Use renderScopeSection instead.");
         var sectionName = section.ToString();
-        if (body != null && body.RenderSection(ViewRenderContext, sectionName))
+        if (body != null && body.RenderSection(ViewRenderContext, sectionName, args))
             return;
     }
 
-    public void renderLayoutSection(object section)
+    public void renderLayoutSection(object section, params object[] args)
     {
         if (IsValueNull(section))
             return;
         var sectionName = section.ToString();
 
         var layout = ViewRenderContext.Layout;
-        if (layout != null && layout.RenderSection(ViewRenderContext, sectionName))
+        if (layout != null && layout.RenderSection(ViewRenderContext, sectionName, args))
             return;
     }
 
-    public void runViewScript(object view, object script)
+    public void runViewScript(object view, object script, params object[] args)
     {
         if (IsValueNull(view) ||
             IsValueNull(script))
@@ -130,10 +130,10 @@ internal sealed class Page : IPage
         var viewName = view.ToString();
         var scriptName = script.ToString();
         var compiledView = GetCompiledView(viewName);
-        compiledView.RunScriptSection(ViewRenderContext, scriptName);
+        compiledView.RunScriptSection(ViewRenderContext, scriptName, args);
     }
 
-    public void runScopeScript(object script)
+    public void runScopeScript(object script, params object[] args)
     {
         if (IsValueNull(script))
             return;
@@ -141,11 +141,11 @@ internal sealed class Page : IPage
         var scriptName = script.ToString();
 
         var renderingNow = ViewRenderContext.RenderingNow;
-        if (renderingNow.RunScriptSection(ViewRenderContext, scriptName))
+        if (renderingNow.RunScriptSection(ViewRenderContext, scriptName, args))
             return;
     }
 
-    public void runBodyScript(object script)
+    public void runBodyScript(object script, params object[] args)
     {
         if (IsValueNull(script))
             return;
@@ -155,18 +155,18 @@ internal sealed class Page : IPage
             throw new RenderException("Can not run body script inside body. Use runScopeScript instead.");
 
         var scriptName = script.ToString();
-        if (body != null && body.RunScriptSection(ViewRenderContext, scriptName))
+        if (body != null && body.RunScriptSection(ViewRenderContext, scriptName, args))
             return;
     }
 
-    public void runLayoutScript(object script)
+    public void runLayoutScript(object script, params object[] args)
     {
         if (IsValueNull(script))
             return;
 
         var scriptName = script.ToString();
         var layout = ViewRenderContext.Layout;
-        if (layout != null && layout.RunScriptSection(ViewRenderContext, scriptName))
+        if (layout != null && layout.RunScriptSection(ViewRenderContext, scriptName, args))
             return;
     }
 

@@ -33,6 +33,8 @@ internal sealed class CompiledView : ICompiledViewInternal, IDisposable
 
     Task<string> _contentRetrievalTask;
 
+    public string SectionParameters { get; set; }
+
     public CompiledView(
         IViewEngineComponents viewEngineComponents,
         IJavascriptEngineProvider javascriptEngineProvider,
@@ -72,29 +74,32 @@ internal sealed class CompiledView : ICompiledViewInternal, IDisposable
         return ViewContent;
     }
 
-    public bool RunScriptSection(IViewRenderContext context, string scriptName)
+    public bool RunScriptSection(IViewRenderContext context, string scriptName, params object[] args)
     {
         if (!ScriptSections.TryGetValue(scriptName, out var scriptSection))
             return false;
 
-        scriptSection.RenderViewNoLayout(context);
+        scriptSection.RenderViewNoLayout(context, args);
         return true;
     }
 
-    public bool RenderSection(IViewRenderContext context, string sectionName)
+    public bool RenderSection(
+        IViewRenderContext context,
+        string sectionName,
+        params object[] args)
     {
         if (!Sections.TryGetValue(sectionName, out var section))
             return false;
 
-        section.RenderViewNoLayout(context);
+        section.RenderViewNoLayout(context, args);
         return true;
     }
 
-    public async ValueTask RenderView(IViewRenderContext context)
+    public async ValueTask RenderView(IViewRenderContext context, params object[] args)
     {
         var contextInternal = (IViewRenderContextInternal)context;
         contextInternal.ViewFlags = ViewInternal.Flags;
-        RunScriptSection(contextInternal, "onLoad");
+        RunScriptSection(contextInternal, "onLoad", args);
         var layout = contextInternal.Page.layout ?? Layout;
         if (layout != null)
         {
@@ -109,14 +114,14 @@ internal sealed class CompiledView : ICompiledViewInternal, IDisposable
             layoutView.RenderViewNoLayout(contextInternal);
             return;
         }
-        RenderViewNoLayout(contextInternal);
+        RenderViewNoLayout(contextInternal, args);
     }
 
-    public void RenderViewNoLayout(IViewRenderContext context)
+    public void RenderViewNoLayout(IViewRenderContext context, params object[] args)
     {
         try
         {
-            RenderViewNoLayoutInternal(context);
+            RenderViewNoLayoutInternal(context, args);
         }
         catch (Exception e)
         {
@@ -125,7 +130,7 @@ View: {Path}", e);
         }
     }
 
-    void RenderViewNoLayoutInternal(IViewRenderContext context)
+    void RenderViewNoLayoutInternal(IViewRenderContext context, params object[] args)
     {
         var contextInternal = (IViewRenderContextInternal)context;
         contextInternal.ViewFlags = ViewInternal.Flags;
@@ -168,7 +173,8 @@ View: {Path}", e);
                 var data = jsEngine
                     .InvokeFunction(
                         part.FunctionName,
-                        contextInternal);
+                        contextInternal,
+                        args);
                 if (part.IsIfStatement || part.IsElseIfStatement)
                 {
                     lastIfStatementCondition = !Equals(data, false);
@@ -256,15 +262,15 @@ View: {Path}", e);
         }
     }
 
-    public async ValueTask<string> RenderViewToString(IViewStringRendererContext context)
+    public async ValueTask<string> RenderViewToString(IViewStringRendererContext context, params object[] args)
     {
-        await RenderView(context).ConfigureAwait(false);
+        await RenderView(context, args).ConfigureAwait(false);
         return context.RenderedString;
     }
 
-    public string RenderViewNoLayoutToString(IViewStringRendererContext context)
+    public string RenderViewNoLayoutToString(IViewStringRendererContext context, params object[] args)
     {
-        RenderViewNoLayout(context);
+        RenderViewNoLayout(context, args);
         return context.RenderedString;
     }
 }

@@ -17,7 +17,8 @@ internal sealed class ViewCompiler : IViewCompiler, IViewEngineComponentsProvide
     ICompiledViewInternal CompileSection(
         CompiledView parentCompiledView,
         string sectionName,
-        string sectionBody)
+        string sectionBody,
+        string sectionParameters)
     {
         var view = new View(
             parentCompiledView.Path + "#" + sectionName,
@@ -27,7 +28,8 @@ internal sealed class ViewCompiler : IViewCompiler, IViewEngineComponentsProvide
         var compiledSection = new CompiledView(
             ViewEngineComponents, JavascriptEngineProvider, view)
         {
-            ViewContent = sectionBody
+            ViewContent = sectionBody,
+            SectionParameters = sectionParameters
         };
         CompileView(compiledSection);
         compiledSection.Layout = null;
@@ -68,7 +70,7 @@ View: {uncompiledView.Path}", e);
             {
                 try
                 {
-                    return CompileSection(uncompiledViewImpl, textPart.SectionName, textPart.GetBody(text));
+                    return CompileSection(uncompiledViewImpl, textPart.SectionName, textPart.GetBody(text), textPart.Parameters);
                 }
                 catch (Exception e)
                 {
@@ -92,7 +94,8 @@ Section: {textPart.SectionName}", e);
                 {
                     return CompileSection(uncompiledViewImpl,
                         textPart.SectionName,
-                        "@{" + textPart.GetBody(text) + "}");
+                        "@{" + textPart.GetBody(text) + "}",
+                        textPart.Parameters);
                 }
                 catch (Exception e)
                 {
@@ -112,13 +115,14 @@ Section: {textPart.SectionName}", e);
 
             var jsEngine = uncompiledViewImpl.JavascriptEngine;
             var list = result.TextParts;
+            var parameters = uncompiledViewImpl.SectionParameters;
             foreach (var textPart in list)
             {
                 if (textPart.IsScript)
                 {
                     var functionName = jsEngine.NextFunctionName;
                     var body = textPart.GetBody(text);
-                    var script = $"async function {functionName} (page, model){{{body}}}";
+                    var script = $"async function {functionName} (page,model{parameters}){{{body}}}";
                     jsEngine.ExecuteScript(script);
                     textPart.FunctionName = functionName;
                 }

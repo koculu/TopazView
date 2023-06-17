@@ -1,5 +1,6 @@
-﻿#undef DEBUG_TEXT_PARTS
+﻿#define DEBUG_TEXT_PARTS
 
+using System;
 using System.Runtime.CompilerServices;
 using Tenray.TopazView.Exceptions;
 
@@ -543,10 +544,17 @@ internal static class TextSplitter
         var endOfScriptDefinition = text[i..].IndexOf(OpenBracket);
         if (endOfScriptDefinition < 0)
             throw new ViewSyntaxException("Invalid section block. Section block must have name and brackets");
-        var sectionName = text.Slice(i, endOfScriptDefinition).Trim().ToString();
-        if (string.IsNullOrWhiteSpace(sectionName))
+        var sectionName = text.Slice(i, endOfScriptDefinition);
+        var sectionParameterBeginIndex = sectionName.IndexOf(OpenParenthesis);
+        var sectionParameterEndIndex = sectionName.IndexOf(CloseParenthesis);
+        if (sectionParameterBeginIndex != -1 && sectionParameterEndIndex != -1)
+        {
+            textPart.Parameters = $",{sectionName.Slice(sectionParameterBeginIndex + 1, sectionParameterEndIndex - sectionParameterBeginIndex - 1)}";
+            sectionName = sectionName.Slice(0, sectionParameterBeginIndex);
+        }
+        if (sectionName.IsWhiteSpace())
             throw new ViewSyntaxException("Invalid section. The section name is missing.");
-        textPart.SectionName = sectionName;
+        textPart.SectionName = sectionName.Trim().ToString();
 
         i += endOfScriptDefinition;
         textPart.Start = i;

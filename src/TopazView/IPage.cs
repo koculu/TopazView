@@ -62,14 +62,12 @@ public interface IPage
     /// 2. In rendering body
     /// 3. In layout.
     /// </summary>
-    void renderSection(object section);
+    void renderSection(object section, params object[] args);
 
     /// <summary>
     /// Renders a section of a view indicated by a relative or absolute path.
     /// </summary>
-    /// <param name="view"></param>
-    /// <param name="section"></param>
-    void renderViewSection(object view, object section);
+    void renderViewSection(object view, object section, params object[] args);
 
     /// <summary>
     /// Runs script section in respect to the following order:
@@ -77,26 +75,24 @@ public interface IPage
     /// 2. In rendering body
     /// 3. In layout.
     /// </summary>
-    void runScript(object script);
+    void runScript(object script, params object[] args);
 
     /// <summary>
     /// Runs a script section of a view indicated by a relative or absolute path.
     /// </summary>
-    /// <param name="view"></param>
-    /// <param name="script"></param>
-    void runViewScript(object view, object script);
+    void runViewScript(object view, object script, params object[] args);
 
-    void renderScopeSection(object section);
+    void renderScopeSection(object section, params object[] args);
 
-    void renderBodySection(object section);
+    void renderBodySection(object section, params object[] args);
 
-    void renderLayoutSection(object section);
+    void renderLayoutSection(object section, params object[] args);
 
-    void runScopeScript(object script);
+    void runScopeScript(object script, params object[] args);
 
-    void runBodyScript(object script);
+    void runBodyScript(object script, params object[] args);
 
-    void runLayoutScript(object script);
+    void runLayoutScript(object script, params object[] args);
 
     /// <summary>
     /// Adds script to the list. This does not append anything.

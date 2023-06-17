@@ -1,4 +1,4 @@
-﻿#undef DEBUG_TEXT_PARTS
+﻿#define DEBUG_TEXT_PARTS
 
 
 #if DEBUG_TEXT_PARTS
@@ -27,6 +27,8 @@ internal sealed class TextPart
     public string SectionName;
 
     public string FunctionName { get; set; }
+
+    public string Parameters { get; set; } = string.Empty;
 
     public bool IsSection => Type == TextPartType.Section;
 

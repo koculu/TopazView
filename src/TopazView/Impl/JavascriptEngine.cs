@@ -50,18 +50,35 @@ internal sealed class JavascriptEngine : IJavascriptEngine
 
     public object InvokeFunction(
         string functionName,
-        IViewRenderContext renderContext)
+        IViewRenderContext renderContext,
+        params object[] args)
     {
         using var cancellationSource = new CancellationTokenSource(renderContext.MaximumScriptDuration);
         try
         {
-            var value = Engine
-                .InvokeFunction(
-                    functionName,
-                    cancellationSource.Token,
-                    renderContext.Page,
-                    renderContext.Model);
-            return value;
+            if (args == null || args.Length == 0)
+            {
+                var value = Engine
+                    .InvokeFunction(
+                        functionName,
+                        cancellationSource.Token,
+                        renderContext.Page,
+                        renderContext.Model);
+                return value;
+            }
+            else
+            {
+                var newArgs = new object[2 + args.Length];
+                newArgs[0] = renderContext.Page;
+                newArgs[1] = renderContext.Model;
+                Array.Copy(args, 0, newArgs, 2, args.Length);
+                var value = Engine
+                    .InvokeFunction(
+                        functionName,
+                        cancellationSource.Token,
+                        newArgs);
+                return value;
+            }
         }
         catch (OperationCanceledException e)
         {
@@ -72,6 +89,5 @@ internal sealed class JavascriptEngine : IJavascriptEngine
                 MaximumScriptDuration = renderContext.MaximumScriptDuration
             };
         }
-
     }
 }

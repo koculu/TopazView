@@ -1,0 +1,26 @@
+@{
+model.buttons = [
+{ title:"Query", icon: "fa-code", link: "/home"},
+{ title:"Schema", icon: "fa-sitemap"},
+{ title:"Admin", icon: "fa-ad"},
+{ title:"Settings", icon: "fa-cog"},
+{ title:"Help", icon: "fa-user"},];
+}
+<div>
+    @{
+        for(const btn of model.buttons) {
+            page.renderScopeSection('button', btn)
+            page.runScopeScript('someFunction', btn, btn.title)
+        }
+    }
+</div>
+@section button(btn) {
+<a href="@btn.link">
+    <i class="fa @btn.icon"></i>
+    <div>@btn.title</div>
+</a>
+}
+@section @someFunction(btn, text) {    
+    page.raw(`<pre>${JSON.stringify(btn)}</pre>`)
+    page.raw(text)
+}

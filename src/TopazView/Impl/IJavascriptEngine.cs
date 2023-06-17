@@ -8,7 +8,8 @@ internal interface IJavascriptEngine
 
     object InvokeFunction(
         string functionName,
-        IViewRenderContext renderContext);
+        IViewRenderContext renderContext,
+        params object[] args);
 
     void DropFunction(string function);
 }

@@ -1,0 +1,22 @@
+<div>
+    <a href="/home">
+    <i class="fa fa-code"></i>
+    <div>Query</div>
+</a>
+<pre>{"title":"Query","icon":"fa-code","link":"/home"}</pre>Query<a href="">
+    <i class="fa fa-sitemap"></i>
+    <div>Schema</div>
+</a>
+<pre>{"title":"Schema","icon":"fa-sitemap"}</pre>Schema<a href="">
+    <i class="fa fa-ad"></i>
+    <div>Admin</div>
+</a>
+<pre>{"title":"Admin","icon":"fa-ad"}</pre>Admin<a href="">
+    <i class="fa fa-cog"></i>
+    <div>Settings</div>
+</a>
+<pre>{"title":"Settings","icon":"fa-cog"}</pre>Settings<a href="">
+    <i class="fa fa-user"></i>
+    <div>Help</div>
+</a>
+<pre>{"title":"Help","icon":"fa-user"}</pre>Help</div>
