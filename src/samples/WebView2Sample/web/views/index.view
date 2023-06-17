@@ -1,12 +1,10 @@
 @Layout  = "/layouts/layout.view"
 <p style="color:yellow">TopazView for WebView2</p>
-
 <p>
     * Use VS Code to edit the views.
 </p>
 <p>
     * Edit the view files while the application is running.
-</p>
 </p>
 <p>
     * Hot reload is enabled.

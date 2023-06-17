@@ -56,6 +56,7 @@ public sealed class FileSystemContentWatcher : IDisposable
                 IncludeSubdirectories = true,
                 EnableRaisingEvents = true
             };
+            watcher.Error += OnError;
             watcher.Changed += OnChanged;
             watcher.Deleted += OnDeleted;
             watcher.Renamed += OnRenamed;
@@ -63,6 +64,38 @@ public sealed class FileSystemContentWatcher : IDisposable
         }
 
         Task.Run(startWatcher).Wait();
+    }
+
+    void OnError(object sender, ErrorEventArgs e)
+    {
+        Task.Run(() => EnsureWatcherIsRunning());
+    }
+
+    void EnsureWatcherIsRunning()
+    {
+        var watcher = Watcher;
+        watcher.EnableRaisingEvents = false;
+        while (watcher.EnableRaisingEvents == false)
+        {
+            if (!Directory.Exists(watcher.Path))
+            {
+                Console.WriteLine($"Content Watcher: Directory does not exist: {watcher.Path}");
+                Thread.Sleep(2000);
+                continue;
+            }
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                watcher.EnableRaisingEvents = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                watcher.EnableRaisingEvents = false;
+                Thread.Sleep(2000);
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+        }
     }
 
     void DropView(string fullPath)
