@@ -1,4 +1,4 @@
-﻿#define DEBUG_TEXT_PARTS
+﻿#undef DEBUG_TEXT_PARTS
 
 using System;
 using System.Runtime.CompilerServices;

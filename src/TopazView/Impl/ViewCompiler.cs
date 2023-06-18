@@ -29,7 +29,7 @@ internal sealed class ViewCompiler : IViewCompiler, IViewEngineComponentsProvide
             ViewEngineComponents, JavascriptEngineProvider, view)
         {
             ViewContent = sectionBody,
-            SectionParameters = sectionParameters
+            Parameters = sectionParameters
         };
         CompileView(compiledSection);
         compiledSection.Layout = null;
@@ -70,6 +70,14 @@ View: {uncompiledView.Path}", e);
             {
                 try
                 {
+                    if (textPart.IsScriptSection)
+                    {
+                        return CompileSection(
+                            uncompiledViewImpl,
+                            textPart.SectionName,
+                            "@{" + textPart.GetBody(text) + "}",
+                            textPart.Parameters);
+                    }
                     return CompileSection(uncompiledViewImpl, textPart.SectionName, textPart.GetBody(text), textPart.Parameters);
                 }
                 catch (Exception e)
@@ -83,39 +91,14 @@ Section: {textPart.SectionName}", e);
 
             uncompiledViewImpl.Sections = result
                 .TextParts
-                .Where(x => x.IsSection)
+                .Where(x => x.IsSectionOrScriptSection)
                 .ToDictionary(
                     x => x.SectionName,
                     compileSection);
 
-            ICompiledViewInternal compileScriptSection(TextPart textPart)
-            {
-                try
-                {
-                    return CompileSection(uncompiledViewImpl,
-                        textPart.SectionName,
-                        "@{" + textPart.GetBody(text) + "}",
-                        textPart.Parameters);
-                }
-                catch (Exception e)
-                {
-                    throw new SectionCompilerException(
-                        $@"Section compilation failed.
-View: {uncompiledView.Path}
-Section: {textPart.SectionName}", e);
-                }
-            }
-
-            uncompiledViewImpl.ScriptSections = result
-                .TextParts
-                .Where(x => x.IsScriptSection)
-                .ToDictionary(
-                    x => x.SectionName,
-                    compileScriptSection);
-
             var jsEngine = uncompiledViewImpl.JavascriptEngine;
             var list = result.TextParts;
-            var parameters = uncompiledViewImpl.SectionParameters;
+            var parameters = uncompiledViewImpl.Parameters;
             foreach (var textPart in list)
             {
                 if (textPart.IsScript)

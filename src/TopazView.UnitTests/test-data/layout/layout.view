@@ -1,7 +1,7 @@
 html
 body
 @page.renderBody()
-@page.renderSection('optional-section')
+@page.renderAllSections('optional-section')
 @page.renderView('/footer/footer.view')
 body
 html

@@ -39,6 +39,6 @@
             &copy; 2023 - Topaz View MVC Sample - <a href="Privacy">Privacy</a>
         </div>
     </footer>
-    @page.renderSection("Scripts")
+    @page.renderAllSections("Scripts")
 </body>
 </html>

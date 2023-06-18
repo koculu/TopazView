@@ -1,4 +1,4 @@
-﻿#define DEBUG_TEXT_PARTS
+﻿#undef DEBUG_TEXT_PARTS
 
 
 #if DEBUG_TEXT_PARTS
@@ -33,6 +33,8 @@ internal sealed class TextPart
     public bool IsSection => Type == TextPartType.Section;
 
     public bool IsScriptSection => Type == TextPartType.ScriptSection;
+
+    public bool IsSectionOrScriptSection => Type == TextPartType.Section || Type == TextPartType.ScriptSection;
 
     public bool IsScript => IsScriptStatement || IsScriptBlock || IsIfStatement || IsElseIfStatement;
 

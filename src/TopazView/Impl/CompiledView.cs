@@ -23,8 +23,6 @@ internal sealed class CompiledView : ICompiledViewInternal, IDisposable
 
     public Dictionary<string, ICompiledViewInternal> Sections;
 
-    public Dictionary<string, ICompiledViewInternal> ScriptSections;
-
     public List<TextPart> TextParts { get; set; }
 
     readonly internal object ViewCompilationLockObject = new();
@@ -33,7 +31,7 @@ internal sealed class CompiledView : ICompiledViewInternal, IDisposable
 
     Task<string> _contentRetrievalTask;
 
-    public string SectionParameters { get; set; }
+    public string Parameters { get; set; }
 
     public CompiledView(
         IViewEngineComponents viewEngineComponents,
@@ -74,15 +72,6 @@ internal sealed class CompiledView : ICompiledViewInternal, IDisposable
         return ViewContent;
     }
 
-    public bool RunScriptSection(IViewRenderContext context, string scriptName, params object[] args)
-    {
-        if (!ScriptSections.TryGetValue(scriptName, out var scriptSection))
-            return false;
-
-        scriptSection.RenderViewNoLayout(context, args);
-        return true;
-    }
-
     public bool RenderSection(
         IViewRenderContext context,
         string sectionName,
@@ -99,7 +88,7 @@ internal sealed class CompiledView : ICompiledViewInternal, IDisposable
     {
         var contextInternal = (IViewRenderContextInternal)context;
         contextInternal.ViewFlags = ViewInternal.Flags;
-        RunScriptSection(contextInternal, "onLoad", args);
+        RenderSection(contextInternal, "onLoad", args);
         var layout = contextInternal.Page.layout ?? Layout;
         if (layout != null)
         {
@@ -181,7 +170,7 @@ View: {Path}", e);
                 }
                 else
                 {
-                    contextInternal.Page.write(data?.ToString());
+                    contextInternal.Page.html(data?.ToString());
                 }
                 continue;
             }

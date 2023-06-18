@@ -43,13 +43,13 @@ public interface IPage
     /// Appends HTML Encoded string to the page.
     /// </summary>
     /// <param name="value"></param>
-    void write(object value);
+    void html(object value);
 
     /// <summary>
     /// Renders a view indicated by a relative or absolute path.
     /// </summary>
-    /// <param name="view"></param>
-    void renderView(object view);
+    /// <param name="viewPath"></param>
+    void renderView(object viewPath);
 
     /// <summary>
     /// Renders body if this view was called as a layout of another view.
@@ -57,42 +57,32 @@ public interface IPage
     void renderBody();
 
     /// <summary>
-    /// Renders section in respect to the following order:
+    /// Renders all sections in respect to the following order:
     /// 1. Current view
     /// 2. In rendering body
     /// 3. In layout.
     /// </summary>
-    void renderSection(object section, params object[] args);
+    void renderAllSections(object sectionName, params object[] args);
 
     /// <summary>
     /// Renders a section of a view indicated by a relative or absolute path.
     /// </summary>
-    void renderViewSection(object view, object section, params object[] args);
+    void renderViewSection(object viewPath, object sectionName, params object[] args);
 
     /// <summary>
-    /// Runs script section in respect to the following order:
-    /// 1. Current view
-    /// 2. In rendering body
-    /// 3. In layout.
+    /// Renders section that is defined in the same file.
     /// </summary>
-    void runScript(object script, params object[] args);
+    void renderSection(object sectionName, params object[] args);
 
     /// <summary>
-    /// Runs a script section of a view indicated by a relative or absolute path.
+    /// Renders the section in body.
     /// </summary>
-    void runViewScript(object view, object script, params object[] args);
+    void renderBodySection(object sectionName, params object[] args);
 
-    void renderScopeSection(object section, params object[] args);
-
-    void renderBodySection(object section, params object[] args);
-
-    void renderLayoutSection(object section, params object[] args);
-
-    void runScopeScript(object script, params object[] args);
-
-    void runBodyScript(object script, params object[] args);
-
-    void runLayoutScript(object script, params object[] args);
+    /// <summary>
+    /// Renders the section in layout.
+    /// </summary>
+    void renderLayoutSection(object sectionName, params object[] args);
 
     /// <summary>
     /// Adds script to the list. This does not append anything.

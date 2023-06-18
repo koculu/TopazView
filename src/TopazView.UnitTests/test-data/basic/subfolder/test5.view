@@ -9,8 +9,8 @@ model.buttons = [
 <div>
     @{
         for(const btn of model.buttons) {
-            page.renderScopeSection('button', btn)
-            page.runScopeScript('someFunction', btn, btn.title)
+            page.renderSection('button', btn)
+            page.renderSection('someFunction', btn, btn.title)
         }
     }
 </div>

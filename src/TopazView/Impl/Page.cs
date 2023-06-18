@@ -61,20 +61,12 @@ internal sealed class Page : IPage
         return (ICompiledViewInternal)compiledView;
     }
 
-    public void renderSection(object section, params object[] args)
+    public void renderAllSections(object section, params object[] args)
     {
-        renderScopeSection(section, args);
+        renderSection(section, args);
         if (ViewRenderContext.Body != ViewRenderContext.RenderingNow)
             renderBodySection(section, args);
         renderLayoutSection(section, args);
-    }
-
-    public void runScript(object script, params object[] args)
-    {
-        runScopeScript(script, args);
-        if (ViewRenderContext.Body != ViewRenderContext.RenderingNow)
-            runBodyScript(script, args);
-        runLayoutScript(script, args);
     }
 
     public void renderViewSection(object view, object section, params object[] args)
@@ -88,7 +80,7 @@ internal sealed class Page : IPage
         compiledView.RenderSection(ViewRenderContext, sectionName, args);
     }
 
-    public void renderScopeSection(object section, params object[] args)
+    public void renderSection(object section, params object[] args)
     {
         if (IsValueNull(section))
             return;
@@ -122,55 +114,7 @@ internal sealed class Page : IPage
             return;
     }
 
-    public void runViewScript(object view, object script, params object[] args)
-    {
-        if (IsValueNull(view) ||
-            IsValueNull(script))
-            return;
-        var viewName = view.ToString();
-        var scriptName = script.ToString();
-        var compiledView = GetCompiledView(viewName);
-        compiledView.RunScriptSection(ViewRenderContext, scriptName, args);
-    }
-
-    public void runScopeScript(object script, params object[] args)
-    {
-        if (IsValueNull(script))
-            return;
-
-        var scriptName = script.ToString();
-
-        var renderingNow = ViewRenderContext.RenderingNow;
-        if (renderingNow.RunScriptSection(ViewRenderContext, scriptName, args))
-            return;
-    }
-
-    public void runBodyScript(object script, params object[] args)
-    {
-        if (IsValueNull(script))
-            return;
-
-        var body = ViewRenderContext.Body;
-        if (body == ViewRenderContext.RenderingNow)
-            throw new RenderException("Can not run body script inside body. Use runScopeScript instead.");
-
-        var scriptName = script.ToString();
-        if (body != null && body.RunScriptSection(ViewRenderContext, scriptName, args))
-            return;
-    }
-
-    public void runLayoutScript(object script, params object[] args)
-    {
-        if (IsValueNull(script))
-            return;
-
-        var scriptName = script.ToString();
-        var layout = ViewRenderContext.Layout;
-        if (layout != null && layout.RunScriptSection(ViewRenderContext, scriptName, args))
-            return;
-    }
-
-    public void write(object value)
+    public void html(object value)
     {
         if (IsValueNull(value))
             return;
