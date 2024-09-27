@@ -5,7 +5,7 @@ namespace Tenray.TopazView.Impl;
 
 internal sealed class ViewRepository : IViewRepository, IViewEngineComponentsProvider
 {
-    ConcurrentDictionary<string, IView> Views { get; } = new();
+    ConcurrentDictionary<string, IView> Views { get; } = new(StringComparer.InvariantCultureIgnoreCase);
 
     public IJavascriptEngineProvider JavascriptEngineProvider { get; }
 

@@ -210,7 +210,7 @@ View: {Path}", e);
 
         if (Sections != null)
         {
-            foreach (var section in Sections.Cast<CompiledView>())
+            foreach (var section in Sections.Values.Cast<CompiledView>())
             {
                 section.ResetCompilation();
                 section.Dispose();
@@ -235,7 +235,7 @@ View: {Path}", e);
     {
         if (Sections != null)
         {
-            foreach (var section in Sections.Cast<CompiledView>())
+            foreach (var section in Sections.Values.Cast<CompiledView>())
             {
                 section.ResetCompilation();
                 section.Dispose();

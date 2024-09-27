@@ -17,7 +17,7 @@ public sealed class FileSystemContentProvider : IContentProvider
     public string GetContent(string path)
     {
         var root = Root;
-        if (path.StartsWith("/", StringComparison.Ordinal))
+        if (path.StartsWith('/'))
             path = path.Substring(1);
         path = Path.Combine(root, path);
         if (!path.StartsWith(root, StringComparison.Ordinal))

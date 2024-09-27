@@ -20,7 +20,7 @@ internal static class PathStringConversions
     public static string JoinPath(this string basePath, params string[] paths)
     {
         var lastPath = paths.LastOrDefault();
-        if (lastPath.StartsWith("/", StringComparison.Ordinal))
+        if (lastPath.StartsWith('/'))
             return lastPath;
         var start = basePath.ToAbsolutePath();
         return Path
@@ -31,7 +31,7 @@ internal static class PathStringConversions
 
     public static string ToAbsolutePath(this string path)
     {
-        if (!path.StartsWith("/", StringComparison.Ordinal))
+        if (!path.StartsWith('/'))
             path = "/" + path;
         var rootLength = Path.GetFullPath("/").Length;
         return '/' + Path.GetFullPath(path)[rootLength..];
