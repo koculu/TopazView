@@ -4,7 +4,7 @@
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>net9.0;net8.0;net7.0;net6.0</TargetFrameworks>
     <RepositoryUrl>https://github.com/koculu/TopazView</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -19,8 +19,9 @@
     <RootNamespace>Tenray.TopazView</RootNamespace>
     <Configurations>Debug;Release</Configurations>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-    <RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
+    <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
     <AnalysisMode>All</AnalysisMode>
+    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Topaz" Version="1.4.0" />
+    <PackageReference Include="Topaz" Version="1.4.1" />
   </ItemGroup>
 
   <ItemGroup>
